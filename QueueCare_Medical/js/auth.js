@@ -1,0 +1,10 @@
+document.addEventListener('DOMContentLoaded',()=>{
+ let role='patient';const tabs=[...document.querySelectorAll('[data-role]')],email=document.getElementById('loginEmail'),pass=document.getElementById('loginPassword'),message=document.getElementById('loginMessage'),demo=document.getElementById('demoCredentials');
+ const creds={patient:['patient@queuecare.demo','patient123'],doctor:['doctor@queuecare.demo','doctor123'],admin:['admin@queuecare.demo','admin123']};
+ function select(r){role=r;tabs.forEach(t=>t.classList.toggle('active',t.dataset.role===r));demo.textContent=({patient:'Patient: patient@queuecare.demo · Password: patient123',doctor:'Doctor: doctor@queuecare.demo · Password: doctor123',admin:'Admin: admin@queuecare.demo · Password: admin123'})[r];message.textContent='';message.classList.remove('login-message-error')}
+ tabs.forEach(t=>t.addEventListener('click',()=>select(t.dataset.role)));
+ document.getElementById('demoHelp').addEventListener('click',e=>{e.preventDefault();email.value=creds[role][0];pass.value=creds[role][1];message.textContent='Demo credentials filled in.'});
+ document.getElementById('togglePassword').addEventListener('click',e=>{pass.type=pass.type==='password'?'text':'password';e.currentTarget.textContent=pass.type==='password'?'Show':'Hide'});
+ document.getElementById('loginForm').addEventListener('submit',e=>{e.preventDefault();let em=email.value.trim().toLowerCase(),pw=pass.value;let valid=em===creds[role][0]&&pw===creds[role][1];if(!valid){message.textContent='Email or password does not match this demo portal.';message.classList.add('login-message-error');return}let user;if(role==='patient')user={role,name:'Aarav Patel',email:em,phone:'+91 98765 43210'};else if(role==='doctor')user={role,name:'Dr. A. Sharma',email:em,department:'Cardiology'};else user={role,name:'Administrator',email:em};QC.setSession(user);location.href=role==='patient'?'patient-dashboard.html':role==='doctor'?'doctor-dashboard.html':'admin-dashboard.html'});
+ select('patient');
+});
